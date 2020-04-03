@@ -14,11 +14,5 @@ namespace MobTimer.Web.Tests
         {
             Assert.Pass();
         }
-
-        [Test]
-        public void Test2()
-        {
-            Assert.Fail();
-        }
     }
 }

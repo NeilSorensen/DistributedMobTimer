@@ -1,5 +1,7 @@
 # Distributed Mob Timer
 
+![.NET Core](https://github.com/NeilSorensen/DistributedMobTimer/workflows/.NET%20Core/badge.svg)
+
 TODO: Come up with a name that makes this sound even slightly interesting
 
 ## Goals
