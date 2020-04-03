@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: dotnet build server/MobTimer.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test server/MobTimer.sln --no-restore`
+      run: dotnet test server/MobTimer.sln --no-restore
     - name: Publish
       run: dotnet publish -c Release -o release server/MobTimer.Web/MobTimer.Web.csproj
     - name: Publish Artifacts
