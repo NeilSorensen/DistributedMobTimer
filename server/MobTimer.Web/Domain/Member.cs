@@ -6,7 +6,7 @@ namespace MobTimer.Web.Domain
     {
         public string DisplayName { get; set; }
 
-        public override bool Equals(object? other)
+        public override bool Equals(object other)
         {
             var otherMember = other as Member;
             return otherMember != null && otherMember.DisplayName == DisplayName;
