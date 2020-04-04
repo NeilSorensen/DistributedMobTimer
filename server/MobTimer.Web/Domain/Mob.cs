@@ -34,6 +34,10 @@ namespace MobTimer.Web.Domain
         {
             lock (memberLock)
             {
+                if (!IsActive())
+                {
+                    throw new InvalidOperationException("The mob has no members, and so cannot be advanced");
+                }
                 do
                 {
                     currentDriver++;
@@ -56,26 +60,22 @@ namespace MobTimer.Web.Domain
         {
             lock (memberLock)
             {
-                members.Single(x => x.Member == member).Status = Status.Afk;
+                members.Single(x => Equals(x.Member, member)).Status = Status.Afk;
             }
         }
-    }
 
-    public class MemberStatus
-    {
-        public MemberStatus(Member member, Status status)
+        public void Leave(Member leavingMember)
         {
-            Member = member;
-            Status = status;
+            lock (memberLock)
+            {
+                var matching = members.SingleOrDefault(x => Equals(x.Member, leavingMember));
+                members.Remove(matching);
+            }
         }
 
-        public Member Member { get; set; }
-        public Status Status { get; set; }
-    }
-
-    public enum Status
-    {
-        Mobbing,
-        Afk
+        public bool IsActive()
+        {
+            return members.Any();
+        }
     }
 }
