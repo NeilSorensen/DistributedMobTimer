@@ -7,17 +7,22 @@ namespace MobTimer.Web.Domain
     public class Mob
     {
         private List<MemberStatus> members;
+        private object memberLock;
         private int currentDriver;
 
         public Mob()
         {
             members = new List<MemberStatus>();
+            memberLock = new object();
             currentDriver = -1;
         }
 
         public void Join(Member newMember)
         {
-            members.Add(new MemberStatus(newMember, Status.Mobbing));
+            lock (memberLock)
+            {
+                members.Add(new MemberStatus(newMember, Status.Mobbing));
+            }
         }
 
         public List<Member> GetMembers()
@@ -27,16 +32,19 @@ namespace MobTimer.Web.Domain
 
         public Member AdvanceDriver()
         {
-            do
+            lock (memberLock)
             {
-                currentDriver++;
-                if (currentDriver == members.Count)
+                do
                 {
-                    currentDriver = 0;
-                }
-            } while (CurrentDriverIsInvalidAndAValidDriverIsInTheMob());
+                    currentDriver++;
+                    if (currentDriver == members.Count)
+                    {
+                        currentDriver = 0;
+                    }
+                } while (CurrentDriverIsInvalidAndAValidDriverIsInTheMob());
 
-            return members[currentDriver].Member;
+                return members[currentDriver].Member;
+            }
         }
 
         private bool CurrentDriverIsInvalidAndAValidDriverIsInTheMob()
@@ -46,7 +54,10 @@ namespace MobTimer.Web.Domain
 
         public void SetAfk(Member member)
         {
-            members.Single(x => x.Member == member).Status = Status.Afk;
+            lock (memberLock)
+            {
+                members.Single(x => x.Member == member).Status = Status.Afk;
+            }
         }
     }
 
