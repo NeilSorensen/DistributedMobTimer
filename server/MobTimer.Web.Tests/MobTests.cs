@@ -17,9 +17,9 @@ namespace MobTimer.Web.Tests
         {
             classUnderTest = new Mob();
 
-            tonyStark = new Member {DisplayName = "IronMan"};
-            clintBarton = new Member {DisplayName = "Hawkeye"};
-            natashaRomanov = new Member {DisplayName = "Black Widow"};
+            tonyStark = new Member( "IronMan");
+            clintBarton = new Member("Hawkeye");
+            natashaRomanov = new Member("Black Widow");
             classUnderTest.Join(tonyStark);
             classUnderTest.Join(clintBarton);
             classUnderTest.Join(natashaRomanov);
@@ -58,7 +58,7 @@ namespace MobTimer.Web.Tests
         [Test]
         public void Afk_members_should_not_be_the_driver()
         {
-            classUnderTest.SetAfk(tonyStark);
+            classUnderTest.SetStatus(tonyStark, Status.Afk);
 
             var electedDrivers = GetNextThreeDrivers();
 
@@ -68,13 +68,25 @@ namespace MobTimer.Web.Tests
         [Test]
         public void Everyone_going_afk_should_not_cause_an_infinite_loop()
         {
-            classUnderTest.SetAfk(tonyStark);
-            classUnderTest.SetAfk(clintBarton);
-            classUnderTest.SetAfk(natashaRomanov);
+            classUnderTest.SetStatus(tonyStark, Status.Afk);
+            classUnderTest.SetStatus(clintBarton, Status.Afk);
+            classUnderTest.SetStatus(natashaRomanov, Status.Afk);
 
             var electedDrivers = GetNextThreeDrivers();
 
             Assert.That(electedDrivers, Is.Not.Empty);
+        }
+
+        [Test]
+        public void After_an_afk_member_returns_they_can_be_the_driver()
+        {
+            classUnderTest.SetStatus(tonyStark, Status.Afk);
+            GetNextThreeDrivers();
+            classUnderTest.SetStatus(tonyStark, Status.Mobbing);
+
+            var driversAfter = GetNextThreeDrivers();
+
+            Assert.That(driversAfter, Does.Contain(tonyStark));
         }
 
         [Test]

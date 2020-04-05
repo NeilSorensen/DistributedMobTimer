@@ -4,7 +4,17 @@ using System.Linq;
 
 namespace MobTimer.Web.Domain
 {
-    public class Mob
+    public interface IMob
+    {
+        void Join(Member newMember);
+        void Leave(Member leavingMember);
+        List<Member> GetMembers();
+        Member AdvanceDriver();
+        void SetStatus(Member member, Status status);
+        bool IsActive();
+    }
+
+    public class Mob : IMob
     {
         private List<MemberStatus> members;
         private object memberLock;
@@ -56,11 +66,11 @@ namespace MobTimer.Web.Domain
             return members[currentDriver].Status == Status.Afk && members.Any(x => x.Status != Status.Afk);
         }
 
-        public void SetAfk(Member member)
+        public void SetStatus(Member member, Status status)
         {
             lock (memberLock)
             {
-                members.Single(x => Equals(x.Member, member)).Status = Status.Afk;
+                members.Single(x => Equals(x.Member, member)).Status = status;
             }
         }
 

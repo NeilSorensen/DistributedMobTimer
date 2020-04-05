@@ -1,0 +1,73 @@
+﻿@page
+@model MobTimer.Web.Pages.MobTimer
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Simple Mob Timer</title>
+    <script type="text/javascript" src="~/js/signalr/signalr.js"></script>
+    <script type="text/javascript" src="~/js/timer.js"></script>
+</head>
+<body>
+<h1>Mob</h1>
+<div class="register" id="userRegistration">
+    <label for="displayName">Display Name</label>
+    <input type="text" id="displayName"/>
+    <button id="registerButton" onclick="joinMob()">Start Mobbing</button>
+</div>
+
+<div class="user unregistered" id="userInfo">
+    <label id="userName"></label>
+    <label class="switch">
+        <input id="afkSwitch" type="checkbox" onchange="afkSwitchFlipped()"/>
+        <span class="slider round"></span>
+    </label>
+</div>
+
+<div class="memberList">
+    <ul id="mobMembers"></ul>
+</div>
+
+<div class="timerControls">
+    <button id="playButton" onclick="playButtonClicked()"></button>
+    <progress id="timerProgress"></progress>
+</div>
+
+<script type="text/javascript">
+    function afkSwitchFlipped() {
+        const newState = document.getElementById("afkSwitch").checked;
+
+    }
+
+    function playButtonClicked() {
+
+    }
+
+    function joinMob() {
+        const displayName = document.getElementById("displayName").value;
+        document.getElementById("userName").textContent = displayName;
+        registerUser(displayName).then(function() {
+            document.getElementById("userInfo").classList.remove("unregistered");
+        });
+    }
+
+    function updateMembers(members) {
+        const listItems = members.map(function (member){
+           const item = document.createElement("li");
+           item.textContent = member;
+           item.classList.add("mobMember");
+           return item;
+        });
+
+        document.getElementById("mobMembers").childNodes = listItems;
+    }
+
+    registerMemberChangedHandler(updateMembers);
+</script>
+</body>
+</html>

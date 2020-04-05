@@ -3,6 +3,8 @@
 var connection = new signalR.HubConnectionBuilder()
     .withUrl("/timer").build();
 
+var memberChangedHandlers = [];
+
 connection.on("ReceiveMessage", function (user, message) {
    var msg = message.replace(/&/g, "&amp;")
        .replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -26,3 +28,17 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     });
     event.preventDefault();
 });
+
+connection.on("MembersUpdated", function(members){
+   memberChangedHandlers.forEach(function(handler) {
+       handler(members);
+   })
+});
+
+function registerMemberChangedHandler(handler) {
+    memberChangedHandlers.push(handler);
+}
+
+function registerUser(userName) {
+    return connection.invoke("JoinMob", userName)
+}
