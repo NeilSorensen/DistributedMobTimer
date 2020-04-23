@@ -12,6 +12,7 @@
     <title>Simple Mob Timer</title>
     <script type="text/javascript" src="~/js/signalr/signalr.js"></script>
     <script type="text/javascript" src="~/js/timer.js"></script>
+    <link type="text/css" rel="stylesheet" href="~/css/timer.css"/>
 </head>
 <body>
 <h1>Mob</h1>
@@ -25,17 +26,21 @@
     <label id="userName"></label>
     <label class="switch">
         <input id="afkSwitch" type="checkbox" onchange="afkSwitchFlipped()"/>
-        <span class="slider round"></span>
+        <label for="afkSwitch">
+            <span class="slider round"></span>
+        </label>
     </label>
 </div>
+
 
 <div class="memberList">
     <ul id="mobMembers"></ul>
 </div>
 
 <div class="timerControls">
-    <button id="playButton" onclick="playButtonClicked()"></button>
-    <progress id="timerProgress"></progress>
+    <button id="playButton" onclick="playButtonClicked()">Start</button>
+    <label for="timerProgress">Time Remaining:</label>
+    <progress id="timerProgress" value="0" max="100"></progress>
 </div>
 
 <script type="text/javascript">
@@ -45,7 +50,7 @@
     }
 
     function playButtonClicked() {
-
+        startTimer();
     }
 
     function joinMob() {
@@ -67,7 +72,14 @@
         document.getElementById("mobMembers").childNodes = listItems;
     }
 
+    function updateTimer(newState) {
+        console.log('Updating timer: ', newState);
+        const timer = document.getElementById('timerProgress');
+        timer.setAttribute('value', newState.percentElapsed);
+    }
+
     registerMemberChangedHandler(updateMembers);
+    registerTimerTocked(updateTimer);
 </script>
 </body>
 </html>

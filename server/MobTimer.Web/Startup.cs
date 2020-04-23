@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MobTimer.Web.Domain;
 using MobTimer.Web.Hubs;
 
 namespace MobTimer.Web
@@ -19,6 +20,9 @@ namespace MobTimer.Web
         {
             services.AddRazorPages();
             services.AddSignalR();
+            services.AddTransient<IMob, Mob>();
+            services.AddTransient<ITimer, Timer>();
+            services.AddSingleton<IRoom, Room>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
