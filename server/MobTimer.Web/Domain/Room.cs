@@ -7,7 +7,8 @@ namespace MobTimer.Web.Domain
 {
     public interface IRoom {
         void Start();
-        void JoinRoom(Member newMember);
+        void JoinRoom(Member newMember, string connectionId);
+        void MemberDisconnected(string connectionId);
         List<Member> GetMembers();
     }
 
@@ -16,9 +17,11 @@ namespace MobTimer.Web.Domain
         private readonly IMob mob;
         private readonly ITimer timer;
         private readonly IHubContext<TimerHub> hubContext;
+        private readonly IDictionary<string, Member> memberIds;
 
         public Room(IMob mob, ITimer timer, IHubContext<TimerHub> hubContext)
         {
+            memberIds = new Dictionary<string, Member>();
             this.mob = mob;
             this.timer = timer;
             this.hubContext = hubContext;
@@ -42,9 +45,18 @@ namespace MobTimer.Web.Domain
             hubContext.Clients.All.SendAsync("NextDriver", nextMobber);
         }
 
-        public void JoinRoom(Member member) 
+        public void JoinRoom(Member member, string connectionId) 
         {
+            memberIds.Add(connectionId, member);
             mob.Join(member);
+        }
+
+        public void MemberDisconnected(string connectionId) 
+        {
+            if(memberIds.ContainsKey(connectionId))
+            {
+                mob.Leave(memberIds[connectionId]);
+            }
         }
 
         public void Dispose()

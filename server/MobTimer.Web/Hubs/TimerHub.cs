@@ -16,13 +16,19 @@ namespace MobTimer.Web.Hubs
         public async Task JoinMob(string displayName)
         {
             var member = new Member(displayName);
-            room.JoinRoom(member);
+            room.JoinRoom(member, Context.ConnectionId);
             await Clients.All.SendAsync("MembersUpdated", room.GetMembers());
         }
 
         public async Task StartDriving()
         {
             room.Start();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception) 
+        {
+            room.MemberDisconnected(Context.ConnectionId);
+            await Clients.All.SendAsync("MembersUpdated", room.GetMembers());
         }
     }
 }
