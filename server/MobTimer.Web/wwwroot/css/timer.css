@@ -5,7 +5,9 @@
 .switch {
     position: relative;
     display: inline-block;
-    width: 160px;
+    width: 124px;
+    height: 34px;
+    margin: 8px;
 }
 
 .switch input {
@@ -24,19 +26,49 @@
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
+    border-radius: 34px;
+}
+
+.switch>input:checked ~ .slider {
+    background-color:#056caf;
 }
 
 .slider:before {
     position: absolute;
-    content: "Mobbing";
-    padding-left: 10px;
     background-color: white;
+    content: "";
     height: 24px;
     width: 24px;
-    left: 4px;
-    bottom: 4px;
+    left: 5px;
+    bottom: 5px;
     transition: .4s;
     border-radius: 50%;
 }
 
-input:
+.switch>input:checked ~ .slider:before {
+    transform: translateX(90px);
+}
+
+.switch>input:checked +.slider .on {
+    display: block;
+}
+
+.switch .slider .on {
+    display: none;
+}
+
+.switch>input:checked + .slider .off {
+    display: none;
+}
+
+.switch .slider .off {
+    display: block;
+}
+
+.switch-text {
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

@@ -25,10 +25,11 @@
 <div class="user unregistered" id="userInfo">
     <label id="userName"></label>
     <label class="switch">
-        <input id="afkSwitch" type="checkbox" onchange="afkSwitchFlipped()"/>
-        <label for="afkSwitch">
-            <span class="slider round"></span>
-        </label>
+        <input id="afkSwitch" type="checkbox" onchange="afkSwitchFlipped()" checked/>
+        <div class="slider">
+            <span class="switch-text on">Mobbing</span>
+            <span class="switch-text off">AFK</span>
+        </div>
     </label>
 </div>
 
@@ -46,7 +47,7 @@
 <script type="text/javascript">
     function afkSwitchFlipped() {
         const newState = document.getElementById("afkSwitch").checked;
-
+        console.log('switch flipped');
     }
 
     function playButtonClicked() {
@@ -62,14 +63,18 @@
     }
 
     function updateMembers(members) {
+        var memberListElement = document.getElementById("mobMembers");
+        memberListElement.innerHTML = '';
+        console.log('New list of members', members);
         const listItems = members.map(function (member){
            const item = document.createElement("li");
-           item.textContent = member;
+           item.textContent = member.displayName;
            item.classList.add("mobMember");
            return item;
         });
-
-        document.getElementById("mobMembers").childNodes = listItems;
+        listItems.forEach(x => {
+            memberListElement.appendChild(x);
+        });
     }
 
     function updateTimer(newState) {

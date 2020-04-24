@@ -40,3 +40,7 @@ function registerUser(userName) {
 function startTimer() {
     return connection.invoke('StartDriving');
 }
+
+connection.onClose(error => {
+    console.assert(connection.state === signalR.HubConnectionState.Disconnected);
+})
