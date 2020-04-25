@@ -2,6 +2,10 @@
     display: none;
 }
 
+.register.registered {
+    display: none;
+}
+
 .switch {
     position: relative;
     display: inline-block;

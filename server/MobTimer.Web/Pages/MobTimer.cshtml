@@ -59,6 +59,7 @@
         document.getElementById("userName").textContent = displayName;
         registerUser(displayName).then(function() {
             document.getElementById("userInfo").classList.remove("unregistered");
+            document.getElementById("userRegistration").classList.add("registered");
         });
     }
 
