@@ -14,16 +14,17 @@ namespace MobTimer.Web.Tests
         {
             var mockTimer = new Mock<ITimer>();
             var mockMob = new Mock<IMob>();
-            var mockHubContext = new MockHubContext<TimerHub>();
+            var mockHubContext = new Mock<IMobMessenger>();
 
-            var classUnderTest = new Room(mockMob.Object, mockTimer.Object, mockHubContext.GetMockHubContext());
+            var classUnderTest = new Room(mockMob.Object, mockTimer.Object, mockHubContext.Object);
 
             Member nextMobber = new Member("Alan Wake");
             mockMob.Setup(x => x.AdvanceDriver()).Returns(nextMobber);
 
             mockTimer.Raise(x => x.Elapsed += null);
 
-            mockHubContext.AssertSentToAll("NextDriver", nextMobber);
+            mockHubContext.Verify(x => x.NextDriver(nextMobber));
+            //mockHubContext.AssertSentToAll("NextDriver", nextMobber);
         }
     }
 

@@ -20,9 +20,17 @@ namespace MobTimer.Web.Hubs
             await Clients.All.SendAsync("MembersUpdated", room.GetMembers());
         }
 
+        public async Task ShuffleMobbers()
+        {
+            room.ShuffleMembers();
+            await Clients.All.SendAsync("MembersUpdated", room.GetMembers());   
+
+        }
+
         public async Task StartDriving()
         {
             room.Start();
+            await Clients.All.SendAsync("NextDriver", room.GetDriver());
         }
 
         public override async Task OnDisconnectedAsync(Exception exception) 

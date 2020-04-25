@@ -22,6 +22,7 @@ namespace MobTimer.Web
             services.AddSignalR();
             services.AddTransient<IMob, Mob>();
             services.AddTransient<ITimer, Timer>();
+            services.AddTransient<IMobMessenger, MobMessenger>();
             services.AddSingleton<IRoom, Room>();
         }
 

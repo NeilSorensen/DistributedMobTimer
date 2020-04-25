@@ -10,28 +10,31 @@ namespace MobTimer.Web.Domain
         void JoinRoom(Member newMember, string connectionId);
         void MemberDisconnected(string connectionId);
         List<Member> GetMembers();
+        void ShuffleMembers();
+        Member GetDriver();
     }
 
     public class Room : IRoom, IDisposable
     {
         private readonly IMob mob;
+        private Member currentDriver;
         private readonly ITimer timer;
-        private readonly IHubContext<TimerHub> hubContext;
+        private readonly IMobMessenger mobMessenger;
         private readonly IDictionary<string, Member> memberIds;
 
-        public Room(IMob mob, ITimer timer, IHubContext<TimerHub> hubContext)
+        public Room(IMob mob, ITimer timer, IMobMessenger mobMessenger)
         {
             memberIds = new Dictionary<string, Member>();
             this.mob = mob;
             this.timer = timer;
-            this.hubContext = hubContext;
+            this.mobMessenger = mobMessenger;
             timer.Elapsed += TimerFinished;
             timer.Tock += TimerTocked;
         }
 
         private void TimerTocked(Tick tick)
         {
-            hubContext.Clients.All.SendAsync("Tock", tick);
+            mobMessenger.Tock(tick);
         }
 
         public void Start()
@@ -41,8 +44,8 @@ namespace MobTimer.Web.Domain
 
         private void TimerFinished()
         {
-            var nextMobber = mob.AdvanceDriver();
-            hubContext.Clients.All.SendAsync("NextDriver", nextMobber);
+            currentDriver = mob.AdvanceDriver();
+            mobMessenger.NextDriver(currentDriver);
         }
 
         public void JoinRoom(Member member, string connectionId) 
@@ -68,6 +71,16 @@ namespace MobTimer.Web.Domain
         public List<Member> GetMembers()
         {
             return mob.GetMembers();
+        }
+
+        public void ShuffleMembers() 
+        {
+            mob.Shuffle();
+        }
+
+        public Member GetDriver()
+        {
+            return currentDriver;
         }
     }
 }

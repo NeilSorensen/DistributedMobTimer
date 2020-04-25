@@ -12,6 +12,7 @@ namespace MobTimer.Web.Domain
         Member AdvanceDriver();
         void SetStatus(Member member, Status status);
         bool IsActive();
+        void Shuffle();
     }
 
     public class Mob : IMob
@@ -86,6 +87,13 @@ namespace MobTimer.Web.Domain
         public bool IsActive()
         {
             return members.Any();
+        }
+
+        public void Shuffle()
+        {
+            members = members.Shuffle().ToList();
+            currentDriver = -1;
+            AdvanceDriver();
         }
     }
 }
